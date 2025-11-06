@@ -1,5 +1,5 @@
 def none(x):
-    return isinstance(x, None)
+    return isinstance(x, type(None))
 
 
 def some(x):
