@@ -29,6 +29,11 @@ def make_initial_guesses(f, x, y, argc):
     return []
 
 
+# def find_mu(values, num_peaks=1):
+    # peaks = scipy.signal.find_peaks(values, )
+    # return peaks[0:num_peaks]
+
+
 def gaussian(x, amp, mu, sigma):
     temp_a = (x - mu) ** 2
     temp_b = 2 * (sigma ** 2)
