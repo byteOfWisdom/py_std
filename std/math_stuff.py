@@ -29,9 +29,17 @@ def make_initial_guesses(f, x, y, argc):
     return []
 
 
-# def find_mu(values, num_peaks=1):
-    # peaks = scipy.signal.find_peaks(values, )
-    # return peaks[0:num_peaks]
+def find_mu(values, num_peaks=1, min_width=2):
+    params = {
+        "width": min_width,
+        "prominence": 1.1
+    }
+    peaks, props = scipy.signal.find_peaks(values, **params)
+    # print(props)
+    prom_sort = np.argsort(props['prominences'])
+    peaks = list(reversed(peaks[prom_sort]))
+    return peaks[0:num_peaks]
+    # return peaks
 
 
 def gaussian(x, amp, mu, sigma):
