@@ -54,11 +54,15 @@ def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
 
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None):
     model = scipy.odr.Model(lambda B, x: func(x, *B))
+    if std.some(x_errors):
+        x_errors[x_errors == 0] = np.nan
+    if std.some(y_errors):
+        y_errors[y_errors == 0] = np.nan
     data = scipy.odr.RealData(x_values, y_values, x_errors, y_errors)
     if std.none(p0):
-        func_args = len(inspect.getfullargspec(func))
-        p0 = np.zeros(func_args)
-        p0 += 1
-    odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=750)
+        argc = len(str(inspect.signature(func)).split()[1:])
+        p0 = np.zeros(argc)
+        p0 += 1  # todo: put an estimator function for beta here
+    odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=7500)
     odr_run.run()
-    return odr_run.output
+    return odr_run.output.beta, odr_run.output
