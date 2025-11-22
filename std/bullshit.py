@@ -8,3 +8,7 @@ def this_is_fucking_stupid_no_one_actually_gives_a_fuck():
 
     # Tell matplotlib to use the locale we set above
     plt.rcParams['axes.formatter.use_locale'] = True
+
+
+def ger():
+    this_is_fucking_stupid_no_one_actually_gives_a_fuck()
