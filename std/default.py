@@ -8,3 +8,4 @@ def plt_pretty(xlabel, ylabel):
     plt.gca().minorticks_on()
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    plt.tight_layout()
