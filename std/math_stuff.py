@@ -16,7 +16,7 @@ def reduced_chi_2(data, fit, params, sigma=None):
 
 def goodness_of_fit(data, fit):
     rss = sum((data - fit) ** 2)
-    tss = sum((data - np.average(data)) ** 2)
+    tss = sum((data - np.average(~data)) ** 2)
     return 1 - (rss / tss)
 
 
