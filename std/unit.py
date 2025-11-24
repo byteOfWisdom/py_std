@@ -4,7 +4,7 @@ um = 1e-6
 mm = 1e-3
 
 eV = 1.602177e-19
-c = 2.999e8
+c = 299792458
 electron_charge = 1.602176634e-19
 vacuum_permitivity = 8.8541878188e-12
 boltzmann_const = 1.380649e-23
