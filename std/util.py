@@ -4,3 +4,12 @@ def none(x):
 
 def some(x):
     return not none(x)
+
+
+def readfile(fname, lines=True, binary=False):
+    if binary:
+        print('no!')
+        return None
+    with open(fname, "r") as handle:
+        content = handle.readlines()
+        return content if lines else "".join(content)
