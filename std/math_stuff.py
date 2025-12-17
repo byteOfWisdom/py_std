@@ -71,6 +71,6 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None):
     odr_run.run()
 
     params = odr_run.output.beta
-    std_devs = np.sqrt(np.diag(odr_run.output.cov_beta))
+    std_devs = odr_run.output.sd_beta
     goodness =goodness_of_fit(y_values, func(x_values, *params))
     return params, (std_devs, goodness)
