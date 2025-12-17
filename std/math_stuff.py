@@ -52,6 +52,10 @@ def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
     return gaussian(x, a1, mu1, sigma1) + gaussian(x, a2, mu2, sigma2) + const
 
 
+def lorentz_curve(x, a, x0, gamma):
+    return a / ((x ** 2 - x0 ** 2) ** 2 + (gamma * x0) ** 2)
+
+
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None):
     model = scipy.odr.Model(lambda B, x: func(x, *B))
     if isinstance(x_errors, float):
