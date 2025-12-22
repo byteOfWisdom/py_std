@@ -89,3 +89,25 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
         return params_cf, (std_devs_cf, goodness_cf)
     
     return params_odr, (std_devs_odr, goodness_odr)
+
+
+def diff_find_maxima(y, smoothing=2):
+    smoothing = 1 if smoothing < 1 else smoothing
+    smooth_grad = np.gradient(np.convolve(y, np.ones(2 * smoothing), mode="same"))
+
+    peaks = []
+
+    before, after = np.zeros(len(y), dtype=np.bool), np.zeros(len(y), dtype=np.bool)
+    for i in range(smoothing):
+        before[i] = 1
+        after[i + smoothing] = 1
+
+    for i in range(smoothing, len(y) - smoothing):
+        if np.all(smooth_grad[before] > 0) and np.all(smooth_grad[after] < 0):
+            peaks.append(i - 1)
+        before = np.roll(before, 1)
+        after = np.roll(after, 1)
+
+    return peaks
+
+
