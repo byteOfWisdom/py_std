@@ -57,6 +57,13 @@ def lorentz_curve(x, a, x0, gamma):
 
 
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False):
+    params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
+    std_devs_cf = np.sqrt(np.diag(cov))
+    goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
+
+    if force_cf:
+        return params_cf, (std_devs_cf, goodness_cf)
+
     model = scipy.odr.Model(lambda B, x: func(x, *B))
     if isinstance(x_errors, float):
         x_errors = np.ones(np.shape(x_values)) * x_errors
@@ -77,10 +84,6 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
     params_odr = odr_run.output.beta
     std_devs_odr = odr_run.output.sd_beta
     goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
-
-    params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
-    std_devs_cf = np.sqrt(np.diag(cov))
-    goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
 
     if np.abs(goodness_cf - 1) < np.abs(goodness_odr - 1) or force_cf:
         return params_cf, (std_devs_cf, goodness_cf)
