@@ -55,26 +55,29 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
         goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
         return params_cf, (std_devs_cf, goodness_cf)
 
-    model = scipy.odr.Model(lambda B, x: func(x, *B))
-    if isinstance(x_errors, float):
-        x_errors = np.ones(np.shape(x_values)) * x_errors
-    if isinstance(y_errors, float):
-        y_errors = np.ones(np.shape(y_values)) * y_errors
-    if std.some(x_errors):
-        x_errors[x_errors == 0] = np.nan
-    if std.some(y_errors):
-        y_errors[y_errors == 0] = np.nan
-    data = scipy.odr.RealData(x_values, y_values, x_errors, y_errors)
-    if std.none(p0):
-        argc = len(str(inspect.signature(func)).split()[1:])
-        p0 = np.zeros(argc)
-        p0 += 1  # todo: put an estimator function for beta here
-    odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=7500)
-    odr_run.run()
+    try:
+        model = scipy.odr.Model(lambda B, x: func(x, *B))
+        if isinstance(x_errors, float):
+            x_errors = np.ones(np.shape(x_values)) * x_errors
+        if isinstance(y_errors, float):
+            y_errors = np.ones(np.shape(y_values)) * y_errors
+        if std.some(x_errors):
+            x_errors[x_errors == 0] = np.nan
+        if std.some(y_errors):
+            y_errors[y_errors == 0] = np.nan
+        data = scipy.odr.RealData(x_values, y_values, x_errors, y_errors)
+        if std.none(p0):
+            argc = len(str(inspect.signature(func)).split()[1:])
+            p0 = np.zeros(argc)
+            p0 += 1  # todo: put an estimator function for beta here
+        odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=7500)
+        odr_run.run()
 
-    params_odr = odr_run.output.beta
-    std_devs_odr = odr_run.output.sd_beta
-    goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
+        params_odr = odr_run.output.beta
+        std_devs_odr = odr_run.output.sd_beta
+        goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
+    except Exception:
+        return fit_func(func, x_values, y_values, x_errors, y_errors, p0, True)
 
     try:
         params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
