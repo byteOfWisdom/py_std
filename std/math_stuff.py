@@ -4,6 +4,10 @@ import scipy
 import inspect
 
 
+def linear(x, a, b):
+    return a * x + b
+
+
 def add(a, b):
     return a + b
 
@@ -29,18 +33,6 @@ def make_initial_guesses(f, x, y, argc):
     return []
 
 
-def find_mu(values, num_peaks=1, min_width=2):
-    params = {
-        "width": min_width,
-        "prominence": 1.1
-    }
-    peaks, props = scipy.signal.find_peaks(values, **params)
-    # print(props)
-    prom_sort = np.argsort(props['prominences'])
-    peaks = list(reversed(peaks[prom_sort]))
-    return peaks[0:num_peaks]
-    # return peaks
-
 
 def gaussian(x, amp, mu, sigma):
     temp_a = (x - mu) ** 2
@@ -57,11 +49,10 @@ def lorentz_curve(x, a, x0, gamma):
 
 
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False):
-    params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
-    std_devs_cf = np.sqrt(np.diag(cov))
-    goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
-
     if force_cf:
+        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
+        std_devs_cf = np.sqrt(np.diag(cov))
+        goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
         return params_cf, (std_devs_cf, goodness_cf)
 
     model = scipy.odr.Model(lambda B, x: func(x, *B))
@@ -85,9 +76,14 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
     std_devs_odr = odr_run.output.sd_beta
     goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
 
-    if np.abs(goodness_cf - 1) < np.abs(goodness_odr - 1) or force_cf:
-        return params_cf, (std_devs_cf, goodness_cf)
-    
+    try:
+        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
+        std_devs_cf = np.sqrt(np.diag(cov))
+        goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
+        if np.abs(goodness_cf - 1) < np.abs(goodness_odr - 1) or force_cf:
+            return params_cf, (std_devs_cf, goodness_cf)
+    except Exception:
+        pass
     return params_odr, (std_devs_odr, goodness_odr)
 
 
@@ -110,4 +106,13 @@ def diff_find_maxima(y, smoothing=2):
 
     return peaks
 
+
+def find_mu(values, num_peaks=1, smoothing=2):
+    peaks = diff_find_maxima(values, smoothing=smoothing)
+    return peaks
+    if len(peaks) == num_peaks:
+        return peaks
+    if len(peaks) < num_peaks and np.abs():
+        return None
+        
 
