@@ -2,7 +2,8 @@ import numpy as np
 import std
 import scipy
 import inspect
-
+import iminuit
+from iminuit import cost
 
 def linear(x, a, b):
     return a * x + b
@@ -33,7 +34,7 @@ def make_initial_guesses(f, x, y, argc):
     return []
 
 
-
+@np.vectorize
 def gaussian(x, amp, mu, sigma):
     temp_a = (x - mu) ** 2
     temp_b = 2 * (sigma ** 2)
@@ -46,6 +47,21 @@ def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
 
 def lorentz_curve(x, a, x0, gamma):
     return a / ((x ** 2 - x0 ** 2) ** 2 + (gamma * x0) ** 2)
+
+
+# def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False):
+#     if std.none(p0):
+#         argc = len(str(inspect.signature(func)).split()[1:])
+#         p0 = np.ones(argc)
+
+#     if std.none(y_errors):
+#         y_errors = np.var(y_values)
+#     cost_func = cost.LeastSquares(x_values, y_values, y_errors, func, loss="soft_l1")
+#     m = iminuit.Minuit(cost_func, *p0)
+#     m.migrad()
+#     m.hesse()
+#     goodness = goodness_of_fit(y_values, func(x_values, *m.values))
+#     return m.values, (m.errors, goodness)
 
 
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False):
