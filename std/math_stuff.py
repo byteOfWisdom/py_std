@@ -4,6 +4,8 @@ import scipy
 import inspect
 import iminuit
 from iminuit import cost
+import numba
+
 
 def linear(x, a, b):
     return a * x + b
@@ -35,10 +37,11 @@ def make_initial_guesses(f, x, y, argc):
 
 
 @np.vectorize
+@numba.njit
 def gaussian(x, amp, mu, sigma):
     temp_a = (x - mu) ** 2
     temp_b = 2 * (sigma ** 2)
-    return amp * np.exp(-temp_a / temp_b)
+    return np.abs(amp) * np.exp(-temp_a / temp_b)
 
 
 def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
