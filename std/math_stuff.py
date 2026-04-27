@@ -44,6 +44,12 @@ def gaussian(x, amp, mu, sigma):
     return np.abs(amp) * np.exp(-temp_a / temp_b)
 
 
+@np.vectorize
+@numba.njit
+def lorentzian(x, amp, mu, gamma):
+    denominator = (x ** 2 - mu ** 2) ** 2 + (gamma ** 2) * (mu ** 2)
+    return amp / denominator
+
 def make_n_gaussian(n):
     return lambda x, *args: sum([std.gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
 
