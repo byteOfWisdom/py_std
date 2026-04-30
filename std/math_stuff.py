@@ -46,6 +46,15 @@ def gaussian(x, amp, mu, sigma):
 
 @np.vectorize
 @numba.njit
+def area_gaussian(x, area, mu, sigma):
+    temp_a = (x - mu) ** 2
+    temp_b = 2 * (sigma ** 2)
+    amp = area / (np.sqrt(2 * np.pi) * sigma)
+    return np.abs(amp) * np.exp(-temp_a / temp_b)
+
+
+@np.vectorize
+@numba.njit
 def lorentzian(x, amp, mu, gamma):
     denominator = (x ** 2 - mu ** 2) ** 2 + (gamma ** 2) * (mu ** 2)
     return amp / denominator
