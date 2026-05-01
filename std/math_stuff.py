@@ -63,6 +63,10 @@ def make_n_gaussian(n):
     return lambda x, *args: sum([std.gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
 
 
+def make_n_area_gaussian(n):
+    return lambda x, *args: sum([std.area_gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
+
+
 def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
     return gaussian(x, a1, mu1, sigma1) + gaussian(x, a2, mu2, sigma2) + const
 
