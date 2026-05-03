@@ -55,6 +55,12 @@ def area_gaussian(x, area, mu, sigma):
 
 @np.vectorize
 @numba.njit
+def linear(x, a, b):
+    return a * x + b
+
+
+@np.vectorize
+@numba.njit
 def lorentzian(x, amp, mu, gamma):
     denominator = (x ** 2 - mu ** 2) ** 2 + (gamma ** 2) * (mu ** 2)
     return amp / denominator
@@ -132,7 +138,7 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
     return params_odr, (std_devs_odr, goodness_odr)
 
 
-def diff_find_maxima(y, smoothing=2):
+def diff_find_maxima(y, smoothing=2, min_magnitude=0.):
     smoothing = 1 if smoothing < 1 else smoothing
     smooth_grad = np.gradient(np.convolve(y, np.ones(2 * smoothing), mode="same"))
 
@@ -144,7 +150,7 @@ def diff_find_maxima(y, smoothing=2):
         after[i + smoothing] = 1
 
     for i in range(smoothing, len(y) - smoothing):
-        if np.all(smooth_grad[before] > 0) and np.all(smooth_grad[after] < 0):
+        if np.all(smooth_grad[before] > min_magnitude) and np.all(smooth_grad[after] < min_magnitude):
             peaks.append(i - 1)
         before = np.roll(before, 1)
         after = np.roll(after, 1)
