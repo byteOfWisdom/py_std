@@ -61,6 +61,12 @@ def linear(x, a, b):
 
 @np.vectorize
 @numba.njit
+def quadratic(x, a, b, c):
+    return a * x * x + b * x + c
+
+
+@np.vectorize
+@numba.njit
 def lorentzian(x, amp, mu, gamma):
     denominator = (x ** 2 - mu ** 2) ** 2 + (gamma ** 2) * (mu ** 2)
     return amp / denominator
