@@ -55,6 +55,15 @@ def area_gaussian(x, area, mu, sigma):
 
 @np.vectorize
 @numba.njit
+def area_gaussian_ug(x, area, mu, sigma, ug):
+    temp_a = (x - mu) ** 2
+    temp_b = 2 * (sigma ** 2)
+    amp = area / (np.sqrt(2 * np.pi) * sigma)
+    return np.abs(amp) * np.exp(-temp_a / temp_b) + ug
+
+
+@np.vectorize
+@numba.njit
 def linear(x, a, b):
     return a * x + b
 
