@@ -12,6 +12,7 @@ def plt_pretty(xlabel, ylabel):
 
 
 def plt_finish(xlabel, ylabel, save_to=False):
+    from matplotlib import pyplot as plt
     plt_pretty(xlabel, ylabel)
     if save_to:
         plt.savefig(save_to)
