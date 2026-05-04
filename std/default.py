@@ -9,3 +9,11 @@ def plt_pretty(xlabel, ylabel):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.tight_layout()
+
+
+def plt_finish(xlabel, ylabel, save_to=False):
+    plt_pretty(xlabel, ylabel)
+    if save_to:
+        plt.savefig(save_to)
+    else:
+        plt.show()
