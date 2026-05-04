@@ -102,9 +102,9 @@ def lorentz_curve(x, a, x0, gamma):
 #     return m.values, (m.errors, goodness)
 
 
-def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False):
+def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False, maxfev=99999):
     if force_cf:
-        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
+        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=maxfev)
         std_devs_cf = np.sqrt(np.diag(cov))
         goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
         return params_cf, (std_devs_cf, goodness_cf)
@@ -124,7 +124,7 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
             argc = len(str(inspect.signature(func)).split()[1:])
             p0 = np.zeros(argc)
             p0 += 1  # todo: put an estimator function for beta here
-        odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=7500)
+        odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=maxfev)
         odr_run.run()
 
         params_odr = odr_run.output.beta
@@ -134,7 +134,7 @@ def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, fo
         return fit_func(func, x_values, y_values, x_errors, y_errors, p0, True)
 
     try:
-        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=99999)
+        params_cf, cov = scipy.optimize.curve_fit(func, x_values,y_values, p0=p0, maxfev=maxfev)
         std_devs_cf = np.sqrt(np.diag(cov))
         goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
         if np.abs(goodness_cf - 1) < np.abs(goodness_odr - 1) or force_cf:
