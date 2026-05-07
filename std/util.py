@@ -44,9 +44,9 @@ def print_csv_table(data, file):
     keys = data.keys()
     rows = max(map(len, data.values()))
     eol = "\n"
-    content = "&".join(keys) + eol
+    content = " ".join(keys) + eol
     for i in range(rows):
-        content += "; ".join([texify(data[k][i]) if i < len(data[k]) else "" for k in keys])
+        content += " ".join([data[k][i].format() if i < len(data[k]) else "" for k in keys])
         content += eol
 
     with open(file, "w") as handle:
