@@ -1,4 +1,6 @@
 from propeller import GenericOp
+import propeller as p
+
 
 def none(x):
     return isinstance(x, type(None))
@@ -40,13 +42,20 @@ def print_tex_table(data, file):
         handle.write(content)
 
 
+def csvable(x):
+    if isinstance(x, p.ErrVal):
+        return x.format()
+    else:
+        return str(round(x, 4))
+
+
 def print_csv_table(data, file):
     keys = data.keys()
     rows = max(map(len, data.values()))
     eol = "\n"
     content = " ".join(keys) + eol
     for i in range(rows):
-        content += " ".join([str(data[k][i]) if i < len(data[k]) else "" for k in keys])
+        content += " ".join([csvable(data[k][i]) if i < len(data[k]) else "" for k in keys])
         content += eol
 
     with open(file, "w") as handle:
