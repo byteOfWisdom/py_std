@@ -46,7 +46,7 @@ def print_csv_table(data, file):
     eol = "\n"
     content = " ".join(keys) + eol
     for i in range(rows):
-        content += " ".join([data[k][i].format() if i < len(data[k]) else "" for k in keys])
+        content += " ".join([str(data[k][i]) if i < len(data[k]) else "" for k in keys])
         content += eol
 
     with open(file, "w") as handle:

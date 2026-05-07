@@ -7,10 +7,6 @@ from iminuit import cost
 import numba
 
 
-def linear(x, a, b):
-    return a * x + b
-
-
 def add(a, b):
     return a + b
 
