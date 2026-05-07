@@ -49,7 +49,7 @@ def gaussian(x, amp, mu, sigma):
 def gaussian_ug(x, amp, mu, sigma, ug):
     temp_a = (x - mu) ** 2
     temp_b = 2 * (sigma ** 2)
-    return np.abs(amp) * np.exp(-temp_a / temp_b)
+    return np.abs(amp) * np.exp(-temp_a / temp_b) + ug
 
 
 @np.vectorize
