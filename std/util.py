@@ -10,6 +10,12 @@ def some(x):
     return not none(x)
 
 
+def mesh(a, b):
+    for first in a:
+        for second in b:
+            yield first, second
+
+
 def readfile(fname, lines=True, binary=False):
     if binary:
         print('no!')
