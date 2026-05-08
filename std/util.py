@@ -16,6 +16,14 @@ def mesh(a, b):
             yield first, second
 
 
+def load_csv(filename, delimiter=" ", skiprows=0):
+    import numpy as np
+    with open(filename, "r") as file:
+        lines = file.readlines()[skiprows:]
+        elements = [list(map(p.from_string, line.split())) for line in lines]
+        return np.transpose(np.array(elements))
+
+
 def readfile(fname, lines=True, binary=False):
     if binary:
         print('no!')
