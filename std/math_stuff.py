@@ -5,6 +5,7 @@ import inspect
 import iminuit
 from iminuit import cost
 import numba
+import propeller as p
 
 
 def add(a, b):
@@ -113,6 +114,44 @@ def lorentz_curve(x, a, x0, gamma):
 #     m.hesse()
 #     goodness = goodness_of_fit(y_values, func(x_values, *m.values))
 #     return m.values, (m.errors, goodness)
+
+def odr_fit(func, x, y, p0=None, maxfev=1000):
+    x_values, x_errors = p.ve(x) if isinstance(x[0], p.GenericOp) else (x, None)
+    y_values, y_errors = p.ve(y) if isinstance(y[0], p.GenericOp) else (y, None)
+
+    if std.some(x_errors):
+        x_errors[x_errors == 0] = np.nan
+    if std.some(y_errors):
+        y_errors[y_errors == 0] = np.nan
+    data = scipy.odr.RealData(x_values, y_values, x_errors, y_errors)
+    argc = len(str(inspect.signature(func)).split()[1:])
+    if std.none(p0):
+        p0 = np.zeros(argc)
+    func = np.vectorize(func)
+    model = scipy.odr.Model(lambda B, t: func(t, *B[:argc]))
+    odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=maxfev)
+    odr_run.run()
+
+    params_odr = odr_run.output.beta
+    std_devs_odr = odr_run.output.sd_beta
+    goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
+
+    return params_odr, (std_devs_odr, goodness_odr)
+
+
+def curve_fit(func, x, y, p0=None, maxfev=1000):
+    x_values, x_errors = p.ve(x) if isinstance(x[0], p.GenericOp) else (x, None)
+    y_values, y_errors = p.ve(y) if isinstance(y[0], p.GenericOp) else (y, None)
+
+    argc = len(str(inspect.signature(func)).split()[1:])
+    if std.none(p0):
+        p0 = np.ones(argc)
+
+    func = np.vectorize(func)
+    params_cf, cov = scipy.optimize.curve_fit(func, x_values, y_values, sigma=y_errors, p0=p0, maxfev=maxfev)
+    std_devs_cf = np.sqrt(np.diag(cov))
+    goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
+    return params_cf, (std_devs_cf, goodness_cf)
 
 
 def fit_func(func, x_values, y_values, x_errors=None, y_errors=None, p0=None, force_cf=False, maxfev=99999):
