@@ -216,6 +216,28 @@ def diff_find_maxima(y, smoothing=2, min_magnitude=0.):
     return peaks
 
 
+def diff_find_peaks(y, denoise=2, min_magnitude=0., min_sharpness=0., get_saddlepoints=False):
+    denoise = 1 if denoise < 1 else denoise
+    # smooth_grad = np.gradient(np.convolve(y, np.ones(2 * denoise), mode="same"))
+    smooth_grad = np.gradient(y)
+
+    peaks = []
+    saddle_points = []
+
+    for i in range(len(y)):
+        if np.all(smooth_grad[i - denoise:i] > min_sharpness) and np.all(smooth_grad[i:i + denoise] < min_sharpness):
+            peaks.append(i)
+        elif np.all(smooth_grad[i - denoise:i] <= smooth_grad[i]) and np.all(smooth_grad[i + 1:i + denoise + 1] <= smooth_grad[i]) and np.abs(smooth_grad[i]) < 1 / min_sharpness:
+            saddle_points.append(i)
+        elif np.all(smooth_grad[i - denoise:i] >= smooth_grad[i]) and np.all(smooth_grad[i + 1:i + denoise + 1] >= smooth_grad[i]) and np.abs(smooth_grad[i]) < 1/ min_sharpness:
+            saddle_points.append(i)
+
+    if get_saddlepoints:
+        print(saddle_points)
+        return peaks + saddle_points
+    return peaks
+
+
 def find_mu(values, num_peaks=1, smoothing=2):
     peaks = diff_find_maxima(values, smoothing=smoothing)
     return peaks

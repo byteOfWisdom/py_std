@@ -14,6 +14,8 @@ def load_csv(filename, delimiter=" ", skiprows=0):
     import numpy as np
     with open(filename, "r") as file:
         lines = file.readlines()[skiprows:]
+        lines = list(map(lambda x: x.strip(), lines))
+        lines = list(filter(lambda x: x.strip() != "", lines))
         elements = [list(map(p.from_string, line.split(delimiter))) for line in lines]
         return np.transpose(np.array(elements))
 
