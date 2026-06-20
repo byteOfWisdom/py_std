@@ -1,6 +1,7 @@
 error_bar_def = {"fmt": " ", "elinewidth": 0.75, "capsize": 2}
 import propeller as p
 from matplotlib import pyplot as plt
+import std
 
 def plt_pretty(xlabel, ylabel):
     plt.grid(which="major")
@@ -33,3 +34,10 @@ def plt_errorbar(x, y, label=None):
 
     plt.errorbar(xval, yval, xerr=xerr, yerr=yerr, label=label, **error_bar_def)
 
+
+def plt_func(f, params=None, label=None):
+    import numpy as np
+    xmin, xmax, _, _ = plt.axis()
+    x = np.linspace(xmin, xmax, 10000)
+    y = f(x) if std.none(params) else f(x, *params) 
+    plt.plot(x, y, label=label)
