@@ -71,3 +71,7 @@ def print_csv_table(data, file):
     with open(file, "w") as handle:
         handle.write(content)
         
+
+
+# def default_plot(x, y, label=None):
+#     if isinstance(x[0])

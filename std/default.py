@@ -1,8 +1,8 @@
 error_bar_def = {"fmt": " ", "elinewidth": 0.75, "capsize": 2}
-
+import propeller as p
+from matplotlib import pyplot as plt
 
 def plt_pretty(xlabel, ylabel):
-    from matplotlib import pyplot as plt
     plt.grid(which="major")
     plt.grid(which="minor", linestyle=":", linewidth=0.5)
     plt.gca().minorticks_on()
@@ -12,7 +12,6 @@ def plt_pretty(xlabel, ylabel):
 
 
 def plt_finish(xlabel, ylabel, save_to=False):
-    from matplotlib import pyplot as plt
     plt.grid(which="major")
     plt.grid(which="minor", linestyle=":", linewidth=0.5)
     plt.gca().minorticks_on()
@@ -24,3 +23,13 @@ def plt_finish(xlabel, ylabel, save_to=False):
         plt.savefig(save_to)
     else:
         plt.show()
+
+
+def plt_errorbar(x, y, label=None):
+    y_is_ev = isinstance(y[0], p.GenericOp)
+    x_is_ev = isinstance(x[0], p.GenericOp)
+    yval, yerr = p.ve(y) if y_is_ev else (y, None)
+    xval, xerr = p.ve(x) if x_is_ev else (x, None)
+
+    plt.errorbar(xval, yval, xerr=xerr, yerr=yerr, **error_bar_def)
+
