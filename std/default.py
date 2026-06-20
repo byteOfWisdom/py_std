@@ -31,5 +31,5 @@ def plt_errorbar(x, y, label=None):
     yval, yerr = p.ve(y) if y_is_ev else (y, None)
     xval, xerr = p.ve(x) if x_is_ev else (x, None)
 
-    plt.errorbar(xval, yval, xerr=xerr, yerr=yerr, **error_bar_def)
+    plt.errorbar(xval, yval, xerr=xerr, yerr=yerr, label=label, **error_bar_def)
 
