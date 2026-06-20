@@ -67,13 +67,11 @@ def area_gaussian_ug(x, area, mu, sigma, ug):
     return np.abs(amp) * np.exp(-temp_a / temp_b) + ug
 
 
-@np.vectorize
 @numba.njit
 def linear(x, a, b):
     return a * x + b
 
 
-@np.vectorize
 @numba.njit
 def quadratic(x, a, b, c):
     return a * x * x + b * x + c
