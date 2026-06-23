@@ -35,9 +35,14 @@ def plt_errorbar(x, y, label=None):
     plt.errorbar(xval, yval, xerr=xerr, yerr=yerr, label=label, **error_bar_def)
 
 
-def plt_func(f, params=None, label=None):
+def plt_func(f, params=None, label=None, xrange=None):
     import numpy as np
-    xmin, xmax, _, _ = plt.axis()
+    xmin, xmax = None, None
+    if std.none(xrange):
+        xmin, xmax, _, _ = plt.axis()
+    else:
+        xmin = xrange[0]
+        xmax = xrange[1]
     x = np.linspace(xmin, xmax, 10000)
     y = f(x) if std.none(params) else f(x, *params) 
     plt.plot(x, y, label=label)
