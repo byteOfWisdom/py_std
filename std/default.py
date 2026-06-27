@@ -26,16 +26,16 @@ def plt_finish(xlabel, ylabel, save_to=False):
         plt.show()
 
 
-def plt_errorbar(x, y, label=None):
+def plt_errorbar(x, y, label=None, marker=None, alpha=None):
     y_is_ev = isinstance(y[0], p.GenericOp)
     x_is_ev = isinstance(x[0], p.GenericOp)
     yval, yerr = p.ve(y) if y_is_ev else (y, None)
     xval, xerr = p.ve(x) if x_is_ev else (x, None)
 
     params = error_bar_def
-    params["alpha"] = 0.75
+    params["alpha"] = alpha if alpha else 0.5
     if std.none(xerr):
-        params["fmt"] = "."
+        params["fmt"] = marker if marker else "."
         params["markersize"] = 5
         
 
