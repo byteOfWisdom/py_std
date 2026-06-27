@@ -33,6 +33,7 @@ def plt_errorbar(x, y, label=None):
     xval, xerr = p.ve(x) if x_is_ev else (x, None)
 
     params = error_bar_def
+    params["alpha"] = 0.75
     if std.none(xerr):
         params["fmt"] = "."
         params["markersize"] = 5
