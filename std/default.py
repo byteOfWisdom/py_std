@@ -34,6 +34,7 @@ def plt_errorbar(x, y, label=None, marker=None, alpha=None):
 
     params = error_bar_def
     params["alpha"] = alpha if alpha else 0.5
+    params["zorder"] = 5
     if std.none(xerr):
         params["fmt"] = marker if marker else "."
         params["markersize"] = 5
@@ -52,4 +53,4 @@ def plt_func(f, params=None, label=None, xrange=None, alpha=None):
     x = np.linspace(xmin, xmax, 10000)
     y = f(x) if std.none(params) else f(x, *params) 
     alpha = alpha if alpha else 1
-    plt.plot(x, y, label=label, alpha=alpha)
+    plt.plot(x, y, label=label, alpha=alpha, zorder=10)

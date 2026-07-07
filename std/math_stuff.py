@@ -6,6 +6,7 @@ import iminuit
 from iminuit import cost
 import numba
 import propeller as p
+# import odrpack
 
 
 def add(a, b):
@@ -87,12 +88,20 @@ def make_n_gaussian(n):
     return lambda x, *args: sum([std.gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
 
 
+def make_n_gaussian_bg(n):
+    return lambda x, *args: args[-1] + sum([std.gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
+
+
 def make_n_area_gaussian(n):
     return lambda x, *args: sum([std.area_gaussian(x, args[i], args[i + 1], args[i + 2]) for i in range(0, 3 * n, 3)])
 
 
 def double_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
     return gaussian(x, a1, mu1, sigma1) + gaussian(x, a2, mu2, sigma2) + const
+
+
+def double_area_gaussian(x, a1, a2, mu1, mu2, sigma1, sigma2, const):
+    return area_gaussian(x, a1, mu1, sigma1) + area_gaussian(x, a2, mu2, sigma2) + const
 
 
 def lorentz_curve(x, a, x0, gamma):
@@ -124,7 +133,7 @@ def odr_fit(func, x, y, p0=None, maxfev=1000):
     data = scipy.odr.RealData(x_values, y_values, x_errors, y_errors)
     argc = len(str(inspect.signature(func)).split()[1:])
     if std.none(p0):
-        p0 = np.zeros(argc)
+        p0 = np.ones(argc)
     func = np.vectorize(func)
     model = scipy.odr.Model(lambda B, t: func(t, *B[:argc]))
     odr_run = scipy.odr.ODR(data, model, beta0=p0, maxit=maxfev)
@@ -132,9 +141,15 @@ def odr_fit(func, x, y, p0=None, maxfev=1000):
 
     params_odr = odr_run.output.beta
     std_devs_odr = odr_run.output.sd_beta
+    # res = odrpack.odr_fit(lambda B, t: func(t, *B[:argc]), x_values, y_values, beta0=p0)
+
     goodness_odr = goodness_of_fit(y_values, func(x_values, *params_odr))
 
     return params_odr, (std_devs_odr, goodness_odr)
+
+
+def minuit_fit(func, x, y, p0=None, maxfev=1000):
+    return None, (None, None)
 
 
 def curve_fit(func, x, y, p0=None, maxfev=1000):
