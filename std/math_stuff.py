@@ -156,12 +156,15 @@ def curve_fit(func, x, y, p0=None, maxfev=1000):
     x_values, x_errors = p.ve(x) if isinstance(x[0], p.GenericOp) else (x, None)
     y_values, y_errors = p.ve(y) if isinstance(y[0], p.GenericOp) else (y, None)
 
+    if std.some(y_errors):
+        y_errors[y_errors == 0] = np.nan
+
     argc = len(str(inspect.signature(func)).split()[1:])
     if std.none(p0):
         p0 = np.ones(argc)
 
     func = np.vectorize(func)
-    params_cf, cov = scipy.optimize.curve_fit(func, x_values, y_values, sigma=y_errors, p0=p0, maxfev=maxfev, absolute_sigma=True)
+    params_cf, cov = scipy.optimize.curve_fit(func, x_values, y_values, sigma=y_errors, p0=p0, maxfev=maxfev, absolute_sigma=False)
     std_devs_cf = np.sqrt(np.diag(cov))
     goodness_cf = goodness_of_fit(y_values, func(x_values, *params_cf))
     return params_cf, (std_devs_cf, goodness_cf)
