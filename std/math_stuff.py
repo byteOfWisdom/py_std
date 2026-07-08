@@ -13,10 +13,20 @@ def add(a, b):
     return a + b
 
 
+# def reduced_chi_2(data, expected, sigma=None):
 def reduced_chi_2(data, fit, params, sigma=None):
+    # expected = function(x, *params)
+    # print(data)
+    # data = np.array([float(x) for x in data])
+    # print(expected)
+    # chi_sq = scipy.stats.chisquare(f_obs=data, f_exp=expected, sum_check=False)
+    # dof = len(data) #- len(params)
+    # red = chi_sq.statistic / dof
+    # return red
+
     dof = len(data) - len(params)
     var = np.sqrt(np.var(data)) if std.util.none(sigma) else sigma
-    return sum(((fit - data) / var) ** 2) / dof
+    return sum(((data - fit) ** 2) / var) / dof
 
 
 def goodness_of_fit(data, fit):
