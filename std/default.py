@@ -35,6 +35,8 @@ def plt_errorbar(x, y, label=None, marker=None, alpha=None):
     params = error_bar_def
     params["alpha"] = alpha if alpha else 0.5
     params["zorder"] = 5
+    if std.some(marker):
+        params["fmt"] = marker
     if std.none(xerr):
         params["fmt"] = marker if marker else "."
         params["markersize"] = 5
