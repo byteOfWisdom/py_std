@@ -29,6 +29,11 @@ def readfile(fname, lines=True, binary=False):
         return content if lines else "".join(content)
 
 
+def write_file(fname, content):
+    with open(fname, "w") as handle:
+        handle.write(content)
+
+
 def texify(value):
     if isinstance(value, GenericOp):
         return ("$ \\num{" + value.format() + "}$").replace("(inf)", "")
