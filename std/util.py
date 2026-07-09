@@ -34,6 +34,10 @@ def write_file(fname, content):
         handle.write(content)
 
 
+def si_string(varname, ev, unit):
+    return "$" + varname + "\\SI{" + ev.format() + "}{" + unit + "}$"
+
+
 def texify(value):
     if isinstance(value, GenericOp):
         return ("$ \\num{" + value.format() + "}$").replace("(inf)", "")
