@@ -35,7 +35,7 @@ def write_file(fname, content):
 
 
 def si_string(varname, ev, unit):
-    return "$" + varname + "\\SI{" + ev.format() + "}{" + unit + "}$"
+    return "$" + varname + " = \\SI{" + ev.format() + "}{" + unit + "}$"
 
 
 def texify(value):
