@@ -13,6 +13,7 @@ def plt_pretty(xlabel, ylabel):
 
 
 def plt_finish(xlabel, ylabel, save_to=False):
+    plt.gcf().set_size_inches(16/1.75, 9/1.75)
     plt.grid(which="major")
     plt.grid(which="minor", linestyle=":", linewidth=0.5)
     plt.gca().minorticks_on()
