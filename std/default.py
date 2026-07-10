@@ -26,6 +26,8 @@ def plt_finish(xlabel, ylabel, save_to=False):
     else:
         plt.show()
 
+    plt.cla()
+
 
 def plt_errorbar(x, y, label=None, marker=None, alpha=None):
     y_is_ev = isinstance(y[0], p.GenericOp)
