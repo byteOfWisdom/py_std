@@ -26,7 +26,7 @@ def reduced_chi_2(data, fit, params, sigma=None):
 
     dof = len(data) - len(params)
     var = np.sqrt(np.var(data)) if std.util.none(sigma) else sigma
-    return sum(((data - fit) ** 2) / var) / dof
+    return np.sum(((data - fit) ** 2) / var) / dof
 
 
 def goodness_of_fit(data, fit):
